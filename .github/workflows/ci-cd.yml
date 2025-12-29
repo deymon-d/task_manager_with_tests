@@ -57,8 +57,8 @@ jobs:
     
     - name: Проверка стиля кода с black
       run: |
-        black --check src/
-        black --check tests/
+        black --check -l 79 src/
+        black --check -l 79 tests/
     
     - name: Проверка линтером flake8
       run: |

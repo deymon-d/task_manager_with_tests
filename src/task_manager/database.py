@@ -1,4 +1,11 @@
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime
+from sqlalchemy import (
+    create_engine,
+    Column,
+    Integer,
+    String,
+    Boolean,
+    DateTime,
+)
 from sqlalchemy.orm import declarative_base, sessionmaker
 from datetime import datetime
 
@@ -50,7 +57,7 @@ class Database:
         return task
 
     def get_pending_tasks(self):
-        return self.session.query(Task).filter(Task.completed == False).all()
+        return self.session.query(Task).filter(Task.completed is False).all()
 
     def close(self):
         self.session.close()

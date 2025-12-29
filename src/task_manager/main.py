@@ -46,7 +46,11 @@ class TaskManager:
             status = "✅ Выполнена" if task.completed else "⏳ В процессе"
             created = task.created_at.strftime("%d.%m.%Y %H:%M")
             table.add_row(
-                str(task.id), task.title, task.description or "-", status, created
+                str(task.id),
+                task.title,
+                task.description or "-",
+                status,
+                created,
             )
 
         console.print(table)
@@ -59,10 +63,13 @@ class TaskManager:
             console.print("[red]Заголовок не может быть пустым![/red]")
             title = Prompt.ask("Введите заголовок задачи")
 
-        description = Prompt.ask("Введите описание (необязательно)", default="")
+        description = Prompt.ask(
+            "Введите описание (необязательно)", default=""
+        )
 
         due_date_str = Prompt.ask(
-            "Введите срок выполнения (ДД.ММ.ГГГГ) или оставьте пустым", default=""
+            "Введите срок выполнения (ДД.ММ.ГГГГ) или оставьте пустым",
+            default="",
         )
 
         due_date = None
@@ -98,13 +105,19 @@ class TaskManager:
 
         try:
             task_id = int(task_id)
-            if Confirm.ask(f"Вы уверены, что хотите удалить задачу {task_id}?"):
+            if Confirm.ask(
+                f"Вы уверены, что хотите удалить задачу {task_id}?"
+            ):
                 task = self.db.delete_task(task_id)
 
                 if task:
-                    console.print(f"[green]✅ Задача '{task.title}' удалена[/green]")
+                    console.print(
+                        f"[green]✅ Задача '{task.title}' удалена[/green]"
+                    )
                 else:
-                    console.print(f"[red]Задача с ID {task_id} не найдена[/red]")
+                    console.print(
+                        f"[red]Задача с ID {task_id} не найдена[/red]"
+                    )
         except ValueError:
             console.print("[red]ID должен быть числом![/red]")
 
@@ -122,7 +135,9 @@ class TaskManager:
 
         for task in tasks:
             created = task.created_at.strftime("%d.%m.%Y")
-            table.add_row(str(task.id), task.title, task.description or "-", created)
+            table.add_row(
+                str(task.id), task.title, task.description or "-", created
+            )
 
         console.print(table)
 
