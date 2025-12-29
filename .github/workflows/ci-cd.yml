@@ -74,7 +74,12 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
+    needs: test
     steps:
+      - name: debug
+        run: |
+          pwd
+          ls -la
       - name: Создание standalone исполняемого файла
         run: |
           pip install pyinstaller
