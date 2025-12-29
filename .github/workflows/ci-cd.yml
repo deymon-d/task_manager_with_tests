@@ -1,0 +1,88 @@
+name: CI - Тестирование и проверка качества кода
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Установка Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+    
+    - name: Установка зависимостей для сборки
+      run: |
+        python -m pip install --upgrade pip
+        pip install build wheel
+    
+    - name: Сборка пакета
+      run: |
+        python -m build
+    
+    - name: Проверка собранного пакета
+      run: |
+        pip install twine
+        twine check dist/*
+
+  test:
+    test-matrix:
+      runs-on: ${{ matrix.os }}
+      strategy:
+        matrix:
+          os: [ubuntu-latest, windows-latest, macos-latest]
+          python-version: ["3.9", "3.10", "3.11", "3.12"]
+      
+    name: Тест на ${{ matrix.os }} Python ${{ matrix.python-version }}
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Установка Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Установка зависимостей
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e ".[dev]"
+    
+    - name: Проверка стиля кода с black
+      run: |
+        black --check src/
+        black --check tests/
+    
+    - name: Проверка линтером flake8
+      run: |
+        flake8 src/
+    
+    - name: Проверка типов с mypy
+      run: |
+        mypy src/
+    
+    - name: Запуск тестов
+      run: |
+        pytest tests/ --cov=task_manager --cov-report=xml
+
+  deploy:
+    - name: Создание standalone исполняемого файла
+      run: |
+        pip install pyinstaller
+        pyinstaller --onefile --name task-manager src/task_manager/main.py
+    
+    - name: Сохранение артефактов для релиза
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-artifacts
+        path: |
+          dist/*
+        retention-days: 30
