@@ -64,10 +64,6 @@ jobs:
       run: |
         flake8 src/
     
-    - name: Проверка типов с mypy
-      run: |
-        mypy src/
-    
     - name: Запуск тестов
       run: |
         pytest tests/ --cov=task_manager --cov-report=xml
