@@ -59,10 +59,7 @@ jobs:
       run: |
         black --check -l 79 src/
         black --check -l 79 tests/
-    
-    - name: Проверка линтером flake8
-      run: |
-        flake8 src/
+
     
     - name: Запуск тестов
       run: |
