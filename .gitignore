@@ -2,3 +2,5 @@ tasks.db
 *__pycache__
 .pytest_cache
 *task_manager_cli.egg-info
+build
+dist
