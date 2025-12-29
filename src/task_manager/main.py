@@ -93,7 +93,9 @@ class TaskManager:
 
             if task:
                 console.print(
-                    f"[green]✅ Задача '{task.title}' отмечена как выполненная[/green]"
+                    f"""
+"[green]✅ Задача '{task.title}' отмечена как выполненная[/green]
+"""
                 )
             else:
                 console.print(f"[red]Задача с ID {task_id} не найдена[/red]")
