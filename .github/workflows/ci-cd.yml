@@ -32,7 +32,7 @@ jobs:
         pip install twine
         twine check dist/*
 
-  test-matrix:
+  test:
     runs-on: ${{ matrix.os }}
     needs: build
     strategy:
