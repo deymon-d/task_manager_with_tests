@@ -9,7 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    needs: test
     
     steps:
     - uses: actions/checkout@v4
@@ -35,6 +34,7 @@ jobs:
 
   test-matrix:
     runs-on: ${{ matrix.os }}
+    needs: build
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
@@ -73,15 +73,17 @@ jobs:
         pytest tests/ --cov=task_manager --cov-report=xml
 
   deploy:
-    - name: Создание standalone исполняемого файла
-      run: |
-        pip install pyinstaller
-        pyinstaller --onefile --name task-manager src/task_manager/main.py
-    
-    - name: Сохранение артефактов для релиза
-      uses: actions/upload-artifact@v4
-      with:
-        name: release-artifacts
-        path: |
-          dist/*
-        retention-days: 30
+    runs-on: ubuntu-latest
+    steps:
+      - name: Создание standalone исполняемого файла
+        run: |
+          pip install pyinstaller
+          pyinstaller --onefile --name task-manager src/task_manager/main.py
+      
+      - name: Сохранение артефактов для релиза
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-artifacts
+          path: |
+            dist/*
+          retention-days: 30
